@@ -1,37 +1,52 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Shield, Clock, Award, Users, CheckCircle, Star } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsapAnimations } from '@/hooks/useGSAP';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const USP = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+
   const timeline = [
     {
-      year: 'Year 1',
-      title: 'Installation Complete',
-      description: 'Professional installation with quality materials and expert craftsmanship',
+      step: '01',
+      title: 'Discovery Call',
+      subtitle: '& Planning',
+      description: 'We start by understanding your roofing needs and goals, then create a clear plan to guide your project.',
       icon: CheckCircle,
+      color: 'primary'
+    },
+    {
+      step: '02',
+      title: 'Design',
+      subtitle: '& Execution',
+      description: 'We bring your vision to life, designing your roofing solution with precise execution and quality materials.',
+      icon: Award,
       color: 'secondary'
     },
     {
-      year: 'Year 2',
-      title: 'First Checkup',
-      description: 'Comprehensive inspection and maintenance to ensure optimal performance',
+      step: '03',
+      title: 'Feedback',
+      subtitle: '& Review',
+      description: 'We get feedback from you, and implement necessary changes to ensure complete satisfaction.',
       icon: Clock,
-      color: 'primary'
-    },
-    {
-      year: 'Year 4',
-      title: 'Second Checkup',
-      description: 'Detailed assessment and any necessary adjustments or repairs',
-      icon: Clock,
-      color: 'primary'
-    },
-    {
-      year: 'Lifetime',
-      title: 'Warranty Protection',
-      description: 'Ongoing coverage and peace of mind for the life of your roof',
-      icon: Shield,
       color: 'accent'
+    },
+    {
+      step: '04',
+      title: 'Launch',
+      subtitle: '& Support',
+      description: 'Your roof is complete! We provide ongoing support and warranty protection for lasting peace of mind.',
+      icon: Shield,
+      color: 'primary'
     }
   ];
 
@@ -62,13 +77,94 @@ const USP = () => {
     }
   ];
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header animations
+      ScrollTrigger.create({
+        trigger: headerRef.current,
+        start: "top 80%",
+        animation: gsap.timeline()
+          .add(gsapAnimations.fadeInUp(headerRef.current?.querySelector('.badge'), 0))
+          .add(gsapAnimations.textReveal(headerRef.current?.querySelector('h2'), 0.2))
+          .add(gsapAnimations.fadeInUp(headerRef.current?.querySelector('p'), 0.4))
+      });
+
+      // Timeline items with modern animations
+      const timelineItems = timelineRef.current?.querySelectorAll('.timeline-item');
+      if (timelineItems) {
+        timelineItems.forEach((item, index) => {
+          // Main content animation
+          ScrollTrigger.create({
+            trigger: item,
+            start: "top 80%",
+            animation: gsap.timeline()
+              .add(gsapAnimations.fadeInUp(item.querySelector('.timeline-card'), 0))
+              .add(gsapAnimations.scaleIn(item.querySelector('.timeline-point'), 0.3))
+          });
+          
+          // Progress bar animation
+          ScrollTrigger.create({
+            trigger: item,
+            start: "top 70%",
+            animation: gsap.fromTo(item.querySelector('.timeline-progress'),
+              { width: '0%' },
+              { 
+                width: `${((index + 1) / timelineItems.length) * 100}%`,
+                duration: 1.5,
+                ease: "power2.out"
+              }
+            )
+          });
+          
+          // Floating animation for icons
+          gsap.to(item.querySelector('.timeline-point'), {
+            y: -10,
+            duration: 2 + (index * 0.5),
+            repeat: -1,
+            yoyo: true,
+            ease: "power2.inOut",
+            delay: 2 + (index * 0.2)
+          });
+        });
+      }
+
+      // Features grid animation
+      const featureCards = featuresRef.current?.querySelectorAll('.feature-card');
+      if (featureCards) {
+        ScrollTrigger.create({
+          trigger: featuresRef.current,
+          start: "top 80%",
+          animation: gsapAnimations.staggerFadeInUp(Array.from(featureCards), 0)
+        });
+      }
+
+      // Floating badge animation
+      ScrollTrigger.create({
+        trigger: badgeRef.current,
+        start: "top 90%",
+        animation: gsap.timeline()
+          .add(gsapAnimations.scaleIn(badgeRef.current, 0))
+          .add(gsap.to(badgeRef.current, {
+            y: -10,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "power2.inOut"
+          }), 0.5)
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-24 bg-gradient-to-br from-background via-card/30 to-background">
+    <section ref={sectionRef} className="py-24 bg-gradient-to-br from-background via-card/30 to-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div ref={headerRef} className="text-center mb-16">
           <div className="flex justify-center mb-6">
-            <Badge className="bg-accent/20 text-accent border-accent/30 px-6 py-2 text-lg font-semibold animate-float">
+            <Badge className="badge bg-accent/20 text-accent border-accent/30 px-6 py-2 text-lg font-semibold">
               Why Choose SkyGuard?
             </Badge>
           </div>
@@ -80,67 +176,96 @@ const USP = () => {
           </p>
         </div>
 
-        {/* Timeline */}
-        <div className="mb-20">
-          <h3 className="text-3xl font-bold text-center text-foreground mb-12">Our Care Timeline</h3>
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-secondary via-primary to-accent opacity-30"></div>
-            
-            <div className="space-y-12">
-              {timeline.map((item, index) => {
-                const Icon = item.icon;
-                const isEven = index % 2 === 0;
-                
-                return (
-                  <div 
-                    key={index} 
-                    className={`flex items-center ${isEven ? 'flex-row' : 'flex-row-reverse'} animate-fade-in-up`}
-                    style={{ animationDelay: `${index * 0.2}s` }}
-                  >
-                    <div className={`w-5/12 ${isEven ? 'text-right pr-8' : 'text-left pl-8'}`}>
-                      <Card className="bg-card/80 border-border/50 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-                        <CardContent className="p-6">
-                          <div className={`flex items-center gap-3 mb-3 ${isEven ? 'flex-row-reverse' : 'flex-row'}`}>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                              item.color === 'primary' ? 'bg-primary/20 text-primary' :
-                              item.color === 'secondary' ? 'bg-secondary/20 text-secondary' :
-                              'bg-accent/20 text-accent'
-                            }`}>
-                              <Icon size={20} />
-                            </div>
-                            <span className="text-sm font-medium text-muted-foreground">{item.year}</span>
-                          </div>
-                          <h4 className="text-lg font-semibold text-foreground mb-2">{item.title}</h4>
-                          <p className="text-muted-foreground text-sm">{item.description}</p>
-                        </CardContent>
-                      </Card>
+        {/* Timeline - Modern Step Process */}
+        <div ref={timelineRef} className="mb-20">
+          <h3 className="text-3xl font-bold text-center text-foreground mb-16">Our 4 Steps to Launch Your Project</h3>
+          
+          <div className="max-w-6xl mx-auto">
+            {timeline.map((item, index) => {
+              const Icon = item.icon;
+              
+              return (
+                <div 
+                  key={index} 
+                  className="timeline-item mb-20 last:mb-0"
+                >
+                  {/* Full width section with yellow background like reference */}
+                  <div className="relative bg-gradient-to-br from-yellow-400 via-yellow-300 to-yellow-200 rounded-3xl p-12 md:p-16 overflow-hidden min-h-[500px]">
+                    {/* Background pattern */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute top-10 right-10 w-32 h-32 rounded-full border-4 border-black/20"></div>
+                      <div className="absolute bottom-10 left-10 w-20 h-20 rounded-full bg-black/10"></div>
+                      <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full border-2 border-black/15"></div>
                     </div>
                     
-                    {/* Timeline Point */}
-                    <div className={`w-6 h-6 rounded-full border-4 border-background z-10 ${
-                      item.color === 'primary' ? 'bg-primary' :
-                      item.color === 'secondary' ? 'bg-secondary' :
-                      'bg-accent'
-                    } animate-glow-pulse`}></div>
+                    {/* Content Layout */}
+                    <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[350px]">
+                      {/* Left Content */}
+                      <div className="space-y-6">
+                        {/* Step Number */}
+                        <div className="timeline-card opacity-0">
+                          <h2 className="text-8xl md:text-9xl font-black text-black/80 mb-4 leading-none">
+                            {item.step}
+                          </h2>
+                          
+                          {/* Title */}
+                          <div className="mb-6">
+                            <h3 className="text-4xl md:text-5xl font-black text-black leading-tight">
+                              {item.title}
+                            </h3>
+                            <h4 className="text-4xl md:text-5xl font-black text-black leading-tight">
+                              {item.subtitle}
+                            </h4>
+                          </div>
+                          
+                          {/* Description */}
+                          <p className="text-xl md:text-2xl text-black/80 leading-relaxed max-w-lg">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Right Content - Illustration Area */}
+                      <div className="flex items-center justify-center">
+                        <div className="timeline-point opacity-0">
+                          {/* Animated Icon Container */}
+                          <div className="relative">
+                            <div className="w-48 h-48 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl">
+                              <Icon size={80} className="text-black" />
+                            </div>
+                            
+                            {/* Floating Elements */}
+                            <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-black/20 animate-pulse"></div>
+                            <div className="absolute -bottom-4 -left-4 w-8 h-8 rounded-full bg-black/15 animate-bounce"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     
-                    <div className="w-5/12"></div>
+                    {/* Progress Bar */}
+                    <div className="absolute bottom-8 left-12 right-12">
+                      <div className="h-2 bg-black/20 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-black transition-all duration-1000 ease-out timeline-progress"
+                          style={{ width: `${((index + 1) / timeline.length) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div ref={featuresRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <Card 
                 key={index}
-                className="group text-center border-2 border-border/50 hover:border-primary/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl animate-scale-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="feature-card group text-center border-2 border-border/50 hover:border-primary/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl opacity-0"
               >
                 <CardContent className="p-6">
                   <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${
@@ -164,8 +289,8 @@ const USP = () => {
 
         {/* Floating Lifetime Warranty Badge */}
         <div className="flex justify-center mt-16">
-          <div className="relative">
-            <Badge className="bg-gradient-to-r from-accent to-secondary text-background px-8 py-4 text-xl font-bold animate-float shadow-yellow-glow">
+          <div ref={badgeRef} className="relative opacity-0">
+            <Badge className="bg-gradient-to-r from-accent to-secondary text-background px-8 py-4 text-xl font-bold shadow-yellow-glow">
               <Star className="mr-2" size={24} />
               LIFETIME WARRANTY INCLUDED
               <Star className="ml-2" size={24} />

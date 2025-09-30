@@ -122,6 +122,15 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    margin: 0;
+    background: 
+      url('/noise.png'), 
+      radial-gradient(ellipse at top, #242937, transparent), 
+      radial-gradient(ellipse at bottom, #171340, transparent), 
+      #000;
+    background-size: 200px, 100%, 200%, auto;
+    background-attachment: fixed;
+    background-repeat: repeat, no-repeat, no-repeat, repeat;
+    @apply text-foreground;
   }
 }
