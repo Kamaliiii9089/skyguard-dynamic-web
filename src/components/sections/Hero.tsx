@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/roofing-hero.jpg';
 import { gsap } from 'gsap';
 import { gsapAnimations } from '@/hooks/useGSAP';
 
 const Hero = () => {
+  const navigate = useNavigate();
   const heroRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -85,24 +87,26 @@ const Hero = () => {
       <div className="absolute inset-0 flex items-center z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-white max-w-4xl">
-            <h1 ref={titleRef} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 opacity-0 leading-tight">
-              Premium Roofing Solutions 
-              <span className="block text-blue-400">Built to Last</span>
+            <h1 ref={titleRef} className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 xs:mb-4 sm:mb-6 opacity-0 leading-tight">
+              <span className="block">Premium Roofing Solutions</span>
+              <span className="block text-blue-400 mt-1 xs:mt-2">Built to Last</span>
             </h1>
-            <p ref={subtitleRef} className="text-lg sm:text-xl md:text-2xl opacity-90 mb-6 sm:mb-8 leading-relaxed max-w-3xl">
+            <p ref={subtitleRef} className="text-base xs:text-lg sm:text-xl md:text-2xl opacity-90 mb-6 xs:mb-7 sm:mb-8 leading-relaxed max-w-3xl">
               Protecting your home with expert craftsmanship, quality materials, and 25+ years of trusted experience in residential and commercial roofing.
             </p>
-            <div ref={buttonRef} className="flex flex-col sm:flex-row gap-3 sm:gap-4 opacity-0">
+            <div ref={buttonRef} className="flex flex-col xs:flex-col sm:flex-row gap-3 xs:gap-3 sm:gap-4 opacity-0">
               <Button 
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-xl w-full sm:w-auto"
+                onClick={() => navigate('/estimate')}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 xs:px-7 sm:px-8 py-3 xs:py-3.5 sm:py-4 text-sm xs:text-base sm:text-lg font-semibold shadow-xl w-full sm:w-auto min-h-[48px] touch-manipulation"
               >
                 Get Free Estimate
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
-                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold backdrop-blur-sm w-full sm:w-auto"
+                onClick={() => navigate('/our-work')}
+                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-6 xs:px-7 sm:px-8 py-3 xs:py-3.5 sm:py-4 text-sm xs:text-base sm:text-lg font-semibold backdrop-blur-sm w-full sm:w-auto min-h-[48px] touch-manipulation"
               >
                 View Our Work
               </Button>

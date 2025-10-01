@@ -2,10 +2,12 @@ import React from 'react';
 import { Shield, Clock, Award, Users, Star, CheckCircle, Phone, Mail, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 import skyguardLogo from '@/assets/skyguard-logo.png';
 import heroImage from '@/assets/roofing-hero.jpg';
 
 const About = () => {
+  const navigate = useNavigate();
   const features = [
     {
       icon: Shield,
@@ -247,7 +249,7 @@ const About = () => {
           </div>
           
           <div className="text-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 mr-4">
+            <Button size="lg" onClick={() => navigate('/estimate')} className="bg-white text-blue-600 hover:bg-gray-100 mr-4">
               Get Free Estimate
             </Button>
             <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">

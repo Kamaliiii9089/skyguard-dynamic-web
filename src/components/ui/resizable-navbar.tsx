@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { 
   IconMenu2, 
@@ -12,6 +13,31 @@ import {
   IconPhone,
   IconMail
 } from "@tabler/icons-react"
+
+// Phone Banner Component
+const PhoneBanner = () => {
+  return (
+    <div className="bg-blue-900 text-white py-2 px-2 xs:px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-center">
+          <div className="flex items-center space-x-1 xs:space-x-2">
+            <IconPhone className="w-3 h-3 xs:w-4 xs:h-4 flex-shrink-0" />
+            <span className="text-xs xs:text-sm font-medium">
+              <span className="hidden xs:inline">Call today! </span>
+              <span className="xs:hidden">Call: </span>
+              <a 
+                href="tel:972-469-1102" 
+                className="ml-1 font-bold hover:underline touch-manipulation"
+              >
+                972-469-1102
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 interface NavItem {
   label: string
@@ -30,6 +56,7 @@ interface ResizableNavbarProps {
 }
 
 export function ResizableNavbar({ items, logo, className = "", showQuoteButton = true, showCallButton = true }: ResizableNavbarProps) {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -48,16 +75,18 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
   }
 
   return (
-    <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? "bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-200/50" 
-          : "bg-transparent"
-      } ${className}`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div className="fixed top-0 left-0 right-0 z-50">
+      <PhoneBanner />
+      <motion.nav
+        className={`transition-all duration-300 ${
+          isScrolled 
+            ? "bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-200/50" 
+            : "bg-transparent"
+        } ${className}`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -162,6 +191,7 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
                   >
                     <Button 
                       variant="outline" 
+                      onClick={() => navigate('/estimate')}
                       className={`transition-all duration-200 ${
                         isScrolled 
                           ? "border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
@@ -182,7 +212,7 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
               variant="ghost"
               size="sm"
               onClick={() => setIsOpen(!isOpen)}
-              className={`inline-flex items-center justify-center p-2 rounded-md transition-all duration-200 ${
+              className={`inline-flex items-center justify-center p-3 rounded-md transition-all duration-200 min-h-[44px] min-w-[44px] touch-manipulation ${
                 isScrolled 
                   ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50" 
                   : "text-white hover:text-blue-200 hover:bg-white/10"
@@ -220,14 +250,14 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
                     <>
                       <button
                         onClick={() => handleDropdownToggle(item.label)}
-                        className="flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                        className="flex items-center justify-between w-full px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 min-h-[48px] touch-manipulation"
                       >
                         <div className="flex items-center">
-                          {item.icon && <span className="mr-2">{item.icon}</span>}
+                          {item.icon && <span className="mr-3">{item.icon}</span>}
                           {item.label}
                         </div>
                         <IconChevronDown 
-                          className={`h-4 w-4 transition-transform duration-200 ${
+                          className={`h-5 w-5 transition-transform duration-200 ${
                             openDropdown === item.label ? "rotate-180" : ""
                           }`} 
                         />
@@ -245,11 +275,11 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
                               <motion.a
                                 key={child.label}
                                 href={child.href}
-                                className="flex items-center px-3 py-2 rounded-md text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-150"
+                                className="flex items-center px-4 py-3 rounded-md text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-150 min-h-[44px] touch-manipulation"
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setIsOpen(false)}
                               >
-                                {child.icon && <span className="mr-2">{child.icon}</span>}
+                                {child.icon && <span className="mr-3">{child.icon}</span>}
                                 {child.label}
                               </motion.a>
                             ))}
@@ -262,11 +292,11 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
                       href={item.href}
                       target={item.external ? '_blank' : '_self'}
                       rel={item.external ? 'noopener noreferrer' : undefined}
-                      className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                      className="flex items-center px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 min-h-[48px] touch-manipulation"
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setIsOpen(false)}
                     >
-                      {item.icon && <span className="mr-2">{item.icon}</span>}
+                      {item.icon && <span className="mr-3">{item.icon}</span>}
                       {item.label}
                     </motion.a>
                   )}
@@ -274,7 +304,7 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
               ))}
               
               {/* Mobile Action Buttons */}
-              <div className="pt-4 space-y-2">
+              <div className="pt-4 space-y-3 px-2">
                 {showCallButton && (
                   <motion.div
                     whileHover={{ scale: 1.02 }}
@@ -282,10 +312,10 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
                   >
                     <Button 
                       variant="default" 
-                      className="bg-green-600 hover:bg-green-700 text-white w-full flex items-center justify-center"
+                      className="bg-green-600 hover:bg-green-700 text-white w-full flex items-center justify-center py-3 text-base font-medium min-h-[48px] touch-manipulation"
                       onClick={() => window.open('tel:+1234567890', '_self')}
                     >
-                      <IconPhone className="h-4 w-4 mr-2" />
+                      <IconPhone className="h-5 w-5 mr-2" />
                       Call Now
                     </Button>
                   </motion.div>
@@ -295,7 +325,11 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => navigate('/estimate')}
+                      className="border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full py-3 text-base font-medium min-h-[48px] touch-manipulation"
+                    >
                       Free Quote
                     </Button>
                   </motion.div>
@@ -306,6 +340,7 @@ export function ResizableNavbar({ items, logo, className = "", showQuoteButton =
         )}
       </AnimatePresence>
     </motion.nav>
+    </div>
   )
 }
 

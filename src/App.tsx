@@ -11,6 +11,8 @@ import { useLenis } from "@/hooks/useLenis";
 import Preloader from "@/components/ui/preloader";
 import Index from "./pages/Index";
 import About from "./pages/About";
+import Estimate from "./pages/Estimate";
+import OurWork from "./pages/OurWork";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +47,32 @@ const AnimatedRoutes = () => {
               variants={pageTransition}
             >
               <About />
+            </motion.div>
+          } 
+        />
+        <Route 
+          path="/estimate" 
+          element={
+            <motion.div
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={pageTransition}
+            >
+              <Estimate />
+            </motion.div>
+          } 
+        />
+        <Route 
+          path="/our-work" 
+          element={
+            <motion.div
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={pageTransition}
+            >
+              <OurWork />
             </motion.div>
           } 
         />
